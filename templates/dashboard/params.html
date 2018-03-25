@@ -1,0 +1,12 @@
+{% extends "dashboard/base.html" %}
+
+{% block content %}
+
+<h3>Parameters</h3>
+    <form method="post" action="{% url "dashboard_param" %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Save"/>
+    </form>
+
+{% endblock %}

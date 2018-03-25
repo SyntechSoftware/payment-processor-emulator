@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Payment Direct iFrame</title>
+    <meta name="description" content="Payment iframe form" />
+    <style type="text/css">
+        body {padding: 0px; margin: 0px; font-family: Arial; direction: rtl; background-color: #fff}
+        .rounded_corners { -moz-border-radius:6px 6px 6px 6px; -webkit-border-radius:6px 6px 6px 6px; border-radius: 6px 6px 6px 6px; }
+        #wrapper { width: 370px; margin: 0px auto;  height:455px;}
+        #header { width: 370px; margin: 0 auto;}
+        #footer { width: 370px; margin: 0 auto;}
+        img {border: 0;}
+        #headimages { width: 328px; list-style-type: none; clear: both; direction:rtl;}
+        #headimages li { display: block; float: right; padding:0; margin: 0;}
+        #content {width: 370px; text-align:right; float:right; margin: 5px 0 10px 0; padding: 0;}
+        #content ul{list-style-type: none; width: 100%;  padding: 0; margin: 0; }
+        #content li{float: right; display: block;  padding: 0; margin: 0;}
+        #footergreenstripe {width: 370px; height:27px; background-color:#9ccf01;  margin: 25px 0 10px 0; }
+        #geo{float:right; padding:10px 13px 0 0 }
+        #bluestripe {width: 350px; height:7px; background-color:#33a1fe; margin: 0 8px 20px 10px;}
+        #sumval{color:#0066cc; font-weight:bold; font-size:14px; line-height: 31px; }
+        #currchar{color:#0066cc; font-weight:bold; font-size:14px; line-height: 31px; }
+        #labelprice{color:#0066cc; font-weight:bold; font-size:14px;}
+        #sumli{display:none !important;}
+        .underlogo{font-size:11px; font-weight:bold; color:#00b4ff;}
+        .footertext{font-family: Arial; color:#fff; font-weight: bold; font-size:12px; padding-top:4px; text-align: center;}
+        .footertext a:link {font-size: 12px; font-weight: bold; text-decoration: underline; color: #fdf402; }
+        .footertext a:visited {font-size: 12px; font-weight: bold; text-decoration: none; color:#fdf402; }
+        .footertext a:active {font-size: 12px; font-weight: bold; text-decoration: none; color:#fdf402; }
+        .footertext a:hover {font-size: 12px; font-weight: bold; text-decoration: none; color:#649c0a;}
+        #returnMessage1 {background-color: #c60000; color: #ffffff; font-size: 18px; font-weight: bold; height: 30px; border: 1px solid black; width: 360px; margin: 5px; display: block; float: right; text-align: center; padding-top:14px; }
+        form {font:14px Arial; margin:0px auto; width:370px;}
+        form ul {list-style:none; margin:0; padding:0;  }
+        form li { padding:56px; margin-bottom:1px; width: 100%;}
+        form label { float:right; width:120px; text-align:right; margin-right:7px; color:#0066cc; line-height:23px; padding:5px;}
+        form input, form textarea { padding:4px; font:13px Arial; border:1px solid #999999; width:198px; vertical-align: text-top;}
+        form select { vertical-align: text-top;margin-top: 5px;}
+        form input:focus, form textarea:focus { border:1px solid #666; background:#e3f1f1; }
+        form li#send {  background:none; margin-top:6px;  text-align: center; color:#0066cc; font-size: 14px; width: 100%; direction: rtl;}
+        form li#send button {   background:#33a1fe; border:none; margin: 8px 0px 0px 0px;  padding:6px 18px; text-align: center; border-radius:5%; -moz-border-radius:5%;-webkit-border-radius:5%;   color:#fff;  cursor:pointer; font-size: 14px;}
+        form li#send button:hover { background-color:#035eab;}
+         .ast { color: red; font-size: small;}
+    </style>
+    <!--[if lte IE 7]>
+    <style type="text/css">
+        #itranpayform li {    width: 100%;  }
+        form li#send {	background:none; margin-top:6px; margin:0px; text-align: center; color:#0066cc; font-size: 14px;}
+        form li#send button {	background:#33a1fe; border:none; margin:8px 0 0 10px; padding:6px 18px; text-align: center; color:#fff;  cursor:pointer; }
+    </style>
+    <![endif]-->
+</head>
+<body>
+<div id="wrapper">
+
+    <div id="header"></div>
+
+    <div id="content">
+
+		<div style="clear: both"></div>
+
+        <form action="/process/" class="round" method="post" id="itranpayform" autocomplete="off">
+        {% for key, val in values.iteritems %}
+	        <input type="hidden" id="sum" name="{{ key }}" value="{{ val }}" />
+        {% endfor %}
+            <ul>
+                <li>
+                    <label>
+                        <span id="labelprice"><span id="lang_sum">סה"כ לתשלום</span></span>
+                    </label>
+                    <span dir="rtl"><input type="hidden" id="sum_open_sum" />
+                    <span id="sumval">{{ values.sum }}</span> <span id="currchar">{{ currency }}</span> </span>
+                </li>
+                <li>
+                    <label for="ccno"><span id="lang_ccno">מס' כרטיס</span><span class="ast">*</span></label>
+                    <input type="tel" name="ccno" id="ccno" autocomplete="off" />
+                </li>
+                <li>
+                    <label for="expmonth"><span id="lang_expiration">תוקף</span><span class="ast">*</span></label>
+                    <select name="expmonth" id="expmonth" style="width:50px;">{% for m in months %}<option value="{{ m }}">{{ m }}</option>{% endfor %}</select><span> / </span>
+                    <select name="expyear" style="width:77px;" id="expyear">{% for y in years %}<option value="{{ y }}">20{{ y }}</option>{% endfor %}</select>
+                </li>
+                <li>
+                    <label for="myid"><span id="lang_id">ת.ז.</span><span class="ast"> *</span></label>
+                    <input type="tel" name="myid" id="myid" /></li><li>
+                    <label for="mycvv">CVV:<span class="ast"> *</span></label>
+                    <input type="tel" name="mycvv" id="mycvv" style="width: 50px;" size="4" maxlength="4" />
+                </li>
+                <li id="send">
+                    <button id="submitbtn" type="submit">בצע תשלום</button>
+                </li>
+            </ul>
+        </form>
+    </div>
+    <div id="footer"></div>
+</div>
+</body>
+</html>

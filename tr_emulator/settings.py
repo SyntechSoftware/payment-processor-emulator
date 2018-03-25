@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'tr_emulator'
 ]
 
 MIDDLEWARE = [
@@ -121,4 +122,4 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 
-LOGIN_REDIRECT_URL = '/merchant/'
+LOGIN_REDIRECT_URL = '/dashboard/'

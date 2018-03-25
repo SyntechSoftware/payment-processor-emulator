@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% block title %}<title>tr emulator</title>{% endblock %}
+</head>
+
+<body>
+    {% block sidebar %}<div class="header">
+        <a href="{% url "dashboard" %}">Transactions</a> |
+        <a href="{% url "dashboard_param" %}">Virtual Terminal</a> |
+        <a href="{% url "password_change" %}">Profile</a> |
+        <a href="{% url "logout" %}">Logout</a>
+    </div>{% endblock %}
+  {% block content %}<!-- default content text (typically empty) -->{% endblock %}
+</body>
+</html>

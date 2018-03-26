@@ -100,8 +100,12 @@ def process_pay(params, supplier, is_inner_valid=False):
     if credit or validate:
         csum = summ
 
-    ConfirmationCode = ''.join(random.choice("0123456789") for _ in range(7))
-    Tempref = ''.join(random.choice("0123456789") for _ in range(8))
+    if Response == "000":
+        ConfirmationCode = ''.join(random.choice("0123456789") for _ in range(7))
+        Tempref = ''.join(random.choice("0123456789") for _ in range(8))
+    else:
+        ConfirmationCode = ''
+        Tempref = ''
 
     results['ConfirmationCode'] = ConfirmationCode
     results['Tempref'] = Tempref
@@ -146,7 +150,10 @@ def process_pay(params, supplier, is_inner_valid=False):
 
     results['index'] = tt.id
 
-    return urllib.urlencode(results)
+    if is_inner_valid:
+        results['to_url'] = success_url if Response == '000' else failure_url
+
+    return urllib.urlencode(results) if not is_inner_valid else results
 
 
 def validate_ccno(number):

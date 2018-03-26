@@ -1,0 +1,16 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<body>
+    <form action="{{ to_url }}" method="post" id="form">
+        {% for key, val in values.iteritems %}
+	        <input type="hidden" name="{{ key }}" value="{{ val }}" />
+        {% endfor %}
+    </form>
+    <script type="text/javascript">
+        window.onload = function(){
+          document.forms['form'].submit();
+        }
+    </script>
+</body>
+</html>

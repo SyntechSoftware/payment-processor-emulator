@@ -61,10 +61,12 @@
 		<div style="clear: both"></div>
 
         <form action="/process/" class="round" method="post" id="itranpayform" autocomplete="off">
+        {% csrf_token %}
         {% for key, val in values.iteritems %}
-	        <input type="hidden" id="sum" name="{{ key }}" value="{{ val }}" />
+	        <input type="hidden" name="{{ key }}" value="{{ val }}" />
         {% endfor %}
             <ul>
+                {% if values.hidesum == 1 %}
                 <li>
                     <label>
                         <span id="labelprice"><span id="lang_sum">סה"כ לתשלום</span></span>
@@ -72,6 +74,7 @@
                     <span dir="rtl"><input type="hidden" id="sum_open_sum" />
                     <span id="sumval">{{ values.sum }}</span> <span id="currchar">{{ currency }}</span> </span>
                 </li>
+                {% endif %}
                 <li>
                     <label for="ccno"><span id="lang_ccno">מס' כרטיס</span><span class="ast">*</span></label>
                     <input type="tel" name="ccno" id="ccno" autocomplete="off" />

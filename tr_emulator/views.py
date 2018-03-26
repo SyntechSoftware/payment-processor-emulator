@@ -5,7 +5,10 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.core.urlresolvers import reverse
 from django.contrib.auth import get_user_model
+from datetime import date
 import json
+from django.views.decorators.clickjacking import xframe_options_exempt
+from django.views.decorators.csrf import csrf_exempt
 
 from .models import Transaction, BillingParams
 from .forms import BillingParamsForm
@@ -79,10 +82,70 @@ class DashboardParams(FormView):
 class IFrameView(TemplateView):
     template_name = 'iframe.html'
 
+    def get_context_data(self, **kwargs):
+        context = super(IFrameView, self).get_context_data(**kwargs)
+        params = { key: self.request.GET.get(key, '') for key in self.request.GET }
+        params['supplier'] = getattr(self, 'supplier', None)
+        context['values'] = params
+        context['months'] = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
+        context['years'] = range(date.today().year % 100, date.today().year%100 + 20)
+        return context
 
-class IFrameProcess(View):
+    @xframe_options_exempt
+    def get(self, request, *args, **kwargs):
+        User = get_user_model()
+        supplier = User.objects.filter(username=kwargs.get('supplier')).first()
+        if not supplier:
+            return HttpResponse("<body>Error: <span>Not supplier not found</span></body>")
+        self.supplier = supplier
+        return super(IFrameView, self).get(request, *args, **kwargs)
+
+
+class IFrameProcess(TemplateView):
+    template_name = "process.html"
+    http_method_names = ['post']
+
+    def __init__(self, **kwargs):
+        super(IFrameProcess, self).__init__(**kwargs)
+        self.results = {}
+        self.to_url = '/done/'
+
+    def get_context_data(self, **kwargs):
+        context = super(IFrameProcess, self).get_context_data(**kwargs)
+        context['values'] = self.results
+        context['to_url'] = self.to_url
+        return context
+
+    @xframe_options_exempt
     def post(self, request, *args, **kwargs):
-        return HttpResponse("ok")
+        User = get_user_model()
+        supplier = User.objects.filter(username = request.POST.get('supplier')).first()
+        if not supplier:
+            return HttpResponse("<body>Error: <span>Not supplier not found</span></body>")
+        params = { key: request.POST.get(key, '') for key in request.POST if not key == 'csrfmiddlewaretoken' }
+        results = process_pay(params, supplier, True)
+        self.results = results
+        self.to_url = results.get('to_url')
+        if self.to_url:
+            del results['to_url']
+
+        return super(IFrameProcess, self).get(request, *args, **kwargs)
+
+
+class IFrameDone(View):
+    @xframe_options_exempt
+    def post(self, request, *args, **kwargs):
+        return HttpResponse("""
+        <html><body>%s</body></html>""" % ("Success!" if request.POST.get('Response') else "Fail!"))
+
+    @xframe_options_exempt
+    def get(self, request, *args, **kwargs):
+        return HttpResponse("""
+        <html><body>%s</body></html>""" % ("Success!" if request.POST.get('Response') else "Fail!"))
+
+    @csrf_exempt
+    def dispatch(self, request, *args, **kwargs):
+        return super(IFrameDone, self).dispatch(request, *args, **kwargs)
 
 
 class ProcessView(View):

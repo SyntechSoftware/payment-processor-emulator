@@ -22,7 +22,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^accounts/', include('django.contrib.auth.urls')),
     url(r'^dashboard/$', Dashboard.as_view(), name='dashboard'),
-    url(r'^dashboard/(?P<trans_id>\d+)/$', DashboardDetail.as_view(), name='dashboard_detail'),
+    url(r'^dashboard/(?P<pk>\d+)/$', DashboardDetail.as_view(), name='dashboard_detail'),
     url(r'^dashboard/params/$', DashboardParams.as_view(), name='dashboard_param'),
     url(r'^(?P<supplier>[a-z0-9]+)/', IFrameView.as_view()),
     url(r'^(?P<supplier>[a-z0-9]+)/iframe.php', IFrameView.as_view()),

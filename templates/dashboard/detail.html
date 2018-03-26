@@ -4,4 +4,8 @@
 
 <h3>Transaction #{{ object.id }} at {{ object.timestamp }}</h3>
 
+{% for key, val in params.iteritems %}
+    {{ key }} : {{ val }} <br/>
+{% endfor %}
+
 {% endblock %}

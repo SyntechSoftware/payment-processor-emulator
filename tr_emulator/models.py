@@ -21,30 +21,14 @@ class BillingParams(models.Model):
 class Transaction(models.Model):
     supplier = models.ForeignKey(get_user_model())
     timestamp = models.DateTimeField(auto_now_add=True, db_index=True)
-    ccno = models.CharField(max_length=20)
     Response = models.CharField(max_length=5)
-    TranzilaTK = models.CharField(max_length=20)
     Tempref = models.CharField(max_length=10)
     ConfirmationCode = models.CharField(max_length=10)
-    benid = models.CharField(max_length=40)
     sum = models.FloatField()
     csum = models.FloatField(default=0.0)
     dsum = models.FloatField(default=0.0)
-    expmonth = models.CharField(max_length=4)
-    expyear = models.CharField(max_length=4)
-    expdate = models.CharField(max_length=6)
-    cred_type = models.CharField(max_length=5)
-    currency = models.IntegerField()
-    cardtype = models.IntegerField()
-    cardissuer = models.IntegerField()                  # 1-9
-    cardaquirer = models.IntegerField()
-    lang = models.CharField(max_length=5)
-    myid = models.CharField(max_length=5)
-    Responsesource = models.IntegerField(default=0)     # == 0 if True
-    Responsecvv = models.IntegerField(default=0)        # == 1 or 3 if True
-    Responseid = models.IntegerField(default=0)         # > 0 if True
+    tranmode = models.CharField(max_length=5)
     params = models.TextField(default='{}')
-
 
 class Tokenization(models.Model):
     token = models.CharField(max_length=20, db_index=True, primary_key=True)

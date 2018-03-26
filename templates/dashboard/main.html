@@ -4,11 +4,28 @@
 
 <h3>Transactions</h3>
 {% if object_list %}
-    <table id="trans">
+    <table id="trans" border="1">
+        <tr>
+            <th>Timestamp</th>
+            <th>Response</th>
+            <th>Amount</th>
+            <th>Mode</th>
+            <th>ConfirmationCode</th>
+            <th>Tempref</th>
+            <th>Credit amount</th>
+            <th>Debit amount</th>
+            <th></th>
+        </tr>
         {% for trans in object_list %}
-            <tr>
-                <td>{{ trans.model }}</td>
-                <td>{{ trans.year }}</td>
+            <tr style="background: {% if trans.Response == "000" %}#DFD{% else %}#FDD{% endif %}">
+                <td>{{ trans.timestamp }}</td>
+                <td>{{ trans.Response }}</td>
+                <td>{{ trans.sum }}</td>
+                <td>{{ trans.tranmode }}</td>
+                <td>{{ trans.ConfirmationCode }}</td>
+                <td>{{ trans.Tempref }}</td>
+                <td>{{ trans.csum }}</td>
+                <td>{{ trans.dsum }}</td>
                 <td><a href="{% url 'dashboard_detail' trans.id %}" class="see_detail">detail</a></td>
             </tr>
         {% endfor %}

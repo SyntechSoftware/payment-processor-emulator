@@ -4,9 +4,13 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.core.urlresolvers import reverse
+from django.contrib.auth import get_user_model
+import json
 
 from .models import Transaction, BillingParams
 from .forms import BillingParamsForm
+
+from .utils import process_pay
 
 
 class Dashboard(ListView):
@@ -22,12 +26,17 @@ class Dashboard(ListView):
         return super(Dashboard, self).dispatch(*args, **kwargs)
 
 
-class DashboardDetail(ListView):
+class DashboardDetail(DetailView):
     model = Transaction
     template_name = 'dashboard/detail.html'
 
     def get_queryset(self):
         return super(DashboardDetail, self).get_queryset().filter(supplier = self.request.user)
+
+    def get_context_data(self, **kwargs):
+        context = super(DashboardDetail, self).get_context_data(**kwargs)
+        context['params'] = json.loads(self.object.params)
+        return context
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
@@ -78,5 +87,18 @@ class IFrameProcess(View):
 
 class ProcessView(View):
     def post(self, request, *args, **kwargs):
-        return HttpResponse("ok")
+        User = get_user_model()
+        supplier = User.objects.filter(username = request.POST.get('supplier')).first()
+        if not supplier:
+            return HttpResponse("<body>Error: <span>Not supplier not found</span></body>")
+        params = { key: request.POST.get(key, '') for key in request.POST }
+        return HttpResponse(process_pay(params, supplier))
+
+    def get(self, request, *args, **kwargs):
+        User = get_user_model()
+        supplier = User.objects.filter(username = request.GET.get('supplier')).first()
+        if not supplier:
+            return HttpResponse("<body>Error: <span>Not supplier not found</span></body>")
+        params = { key: request.GET.get(key, '') for key in request.GET }
+        return HttpResponse(process_pay(params, supplier))
 

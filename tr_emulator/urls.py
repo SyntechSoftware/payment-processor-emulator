@@ -16,7 +16,7 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 from django.views.generic.base import RedirectView
-from .views import IFrameView, IFrameProcess,ProcessView, DashboardParams, DashboardDetail, Dashboard, IFrameDone
+from .views import IFrameView, IFrameProcess,ProcessView, DashboardParams, DashboardDetail, Dashboard, IFrameDone, WhiteListView
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -29,5 +29,6 @@ urlpatterns = [
     url(r'^(?P<supplier>[a-z0-9]+)/', IFrameView.as_view()),
     url(r'^(?P<supplier>[a-z0-9]+)/iframe.php', IFrameView.as_view()),
     url(r'^cgi-bin/tranzila71u.cgi$', ProcessView.as_view()),
+    url(r'^cgi-bin/tranzila31cl.cgi$', WhiteListView.as_view()),
     url(r'^.*$', RedirectView.as_view(url='accounts/login/', permanent=False)),
 ]

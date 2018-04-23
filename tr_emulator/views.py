@@ -148,6 +148,14 @@ class IFrameDone(View):
         return super(IFrameDone, self).dispatch(request, *args, **kwargs)
 
 
+class WhiteListView(View):
+    def post(self, request, *args, **kwargs):
+        return HttpResponse("1")
+
+    def get(self, request, *args, **kwargs):
+        return HttpResponse("1")
+
+
 class ProcessView(View):
     def post(self, request, *args, **kwargs):
         User = get_user_model()
